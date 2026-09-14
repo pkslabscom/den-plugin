@@ -1,0 +1,16 @@
+{
+  "name": "den-staging",
+  "description": "den on its staging environment, for testing.",
+  "author": {
+    "name": "pkslabs",
+    "url": "https://pkslabs.com"
+  },
+  "homepage": "https://den-staging.pkslabs.com/guide/connect-an-agent",
+  "keywords": [
+    "den",
+    "memory",
+    "artifacts",
+    "versioning",
+    "system of record"
+  ]
+}

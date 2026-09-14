@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "den": {
+      "type": "http",
+      "url": "https://den-staging.pkslabs.com/mcp"
+    }
+  }
+}
