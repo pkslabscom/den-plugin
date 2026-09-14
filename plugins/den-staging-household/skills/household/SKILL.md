@@ -9,17 +9,17 @@ A house and the people in it: the groceries, who lives here, the contacts, the s
 
 den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
 
-On a workspace with no topic of this kind yet, `create_topic` with kind `household` first, and ask for the currency the house pays in, its timezone, and who lives here.
+On a workspace with no topic of this kind yet, `create_topic` with kind `household` first, and ask for the currency the house pays in and its timezone (kept as the topic's properties), and who lives here (the Members table).
 
 ## What a household topic keeps
 
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
-| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
-| **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
-| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 | **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 | **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
+| **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
+| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
+| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 
 ## Triage: what kind of request is this?
 
@@ -44,7 +44,7 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 
 ## Rules of this kind
 
-Anything about the house is kept here: pass this workspace to find_place and search, and look here before anywhere else. To put something: a live document when the words name one (find_place, then change_document); otherwise it happened, so append_entry on the journal with the amount and its currency. A removed row or an emptied list needs the person's yes first; adding and ticking do not. Never guess a date, an amount or an allergy nobody said. Every member reads everything here: what one person would not want the whole house to read (a therapist, a diagnosis, a salary) belongs in that person's own personal workspace, and you say so instead of writing it here. A password, a key or a full account number is never written anywhere in den: say so, and offer where it lives instead. To answer: the value as kept first, then where it came from with its web_url; when it is not kept, say so and offer to keep it, and never answer from general knowledge as if it were the household's.
+Anything about the house is kept here: pass this workspace to find_place and search, and look here before anywhere else. To put something: a live document when the words name one (find_place, then change_document); otherwise it happened, so append_entry on the journal with the amount and its currency. A removed row or an emptied list needs the person's yes first; adding and ticking do not. Amounts are kept in the currency the person said, else the place's (find_place says it), and every answer names it. Never guess a date, an amount or an allergy nobody said: a day said relatively ("next Tuesday") is confirmed as a date before it is booked. Every member reads everything here: what one person would not want the whole house to read (a therapist, a diagnosis, a salary) belongs in that person's own personal workspace, and you say so instead of writing it here. A password, a key or a full account number is never written anywhere in den: say so, and offer where it lives instead. To answer: the value as kept first, then where it came from with its web_url; when it is not kept, say so and offer to keep it, and never answer from general knowledge as if it were the household's.
 
 ## Rules that keep den consistent
 
@@ -94,4 +94,4 @@ Anything about the house is kept here: pass this workspace to find_place and sea
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v1 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
+Generated from the marketplace listing `household` v2 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
