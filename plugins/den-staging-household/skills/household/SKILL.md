@@ -1,20 +1,36 @@
 ---
-name: den
-description: Use whenever den is connected as an MCP server (tools like find_place, search, read_artifact, write_artifact, list_topics) and the user asks to add, change, tick, find, read, store, version, or share something they keep — a list, a table, dates, notes, a plan, a record. Also for "what do we have on X", "save this", "put this in den", "where is the latest…". This skill decides what den should do with a request and how to do it without clobbering anyone.
+name: household
+description: Use whenever the den household connector is connected and the person mentions the house: groceries or a shopping list, who lives here, a contact (the vet, the plumber, the school), a service or bill (internet, insurance, a subscription), or tells you something that happened at home (a repair, a purchase, a meal out, a decision, an appointment, an allergy) without asking you to save it. Also "what do we have on…", "when does … renew", "who is our …".
 ---
 
-# den — how an agent uses it
+# den for Household
 
-den keeps the things a person or a group wants to survive the conversation. A **topic** is one thing they keep: a household, a car, a trip, a product, a study. A topic holds named **artifacts**, and every write makes a new version. Nothing is destroyed.
+A house and the people in it: the groceries, who lives here, the contacts, the services and bills, and a journal of what happened. Ask in your own words; every answer says where it came from.
 
-Some artifacts are **documents** den understands and draws: a list, a table, a set of dates, a note. Others are written pages. A topic's **kind** declares which artifacts belong to it and how to keep each one.
+den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
 
-People edit in the web app or in a mounted folder. Agents use these tools. A save in the mounted folder commits on its own. Never ask a person to check out or check in a file. Every result carries a `web_url` you can hand to a human.
+On a workspace with no topic of this kind yet, `create_topic` with kind `household` first, and ask for the currency the house pays in, its timezone, and who lives here.
+
+## What a household topic keeps
+
+| Place | Slot | Kept as | What goes there |
+|---|---|---|---|
+| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
+| **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
+| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
+| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
+| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
 
 ## Triage: what kind of request is this?
 
 | The user says | It is a | Do |
 |---|---|---|
+| "add milk", "tick off the eggs", "what do I need from the shop" | **the groceries** | `find_place` with the words, then `change_document` with the whole list. Adding and ticking need no question; emptying the list does. |
+| "the plumber is Joe, 07700 900123", "the vet moved" | **a contact** | `find_place`, then `change_document` on Contacts. A person who lives here goes in Members, not Contacts. |
+| "internet is Northline, 55 a month", "cancel the gym" | **a service** | `find_place`, then `change_document` on Services. den cannot cancel anything: give the how-to-cancel cell and the renewal date, change nothing unless told. |
+| "the plumber fixed the leak, 240", "we ate out tonight", "Sam is allergic to peanuts", "we decided to redo the kitchen" | **a thing that happened** | `append_entry` on the journal with the amount and its currency. A receipt's lines are an `x-receipt_<date>_<shop>` table as well. Never let it pass as merely noted. |
+| "Sam's therapist is Dr Lee", a diagnosis, a salary | **private to one person** | Not the shared house: say it belongs in that person's own workspace, and write nothing here. |
+| "the wifi password is…", a PIN, a card number, a key | **a secret** | den keeps none: say so, write nothing, and say where it lives instead (a password manager). |
 | "add eggs to the grocery list", "tick off the milk", "put the dentist on Thursday", "add a bill", "the cat had her jab" | **a thing they keep** | `find_place` with their own words. Then use the tool that place names in `write`: `change_document` with the whole document, `append_entry` for a log, `write_artifact` for a written page. Never `create_topic`. |
 | "what do we have on…", "find…", "where is…", "what did we decide about…" | **read** | `search` first. Natural language works, because it reads words and meaning. Then `read_artifact` on the best hit. Quote the `web_url`. When the result says `confident: false`, say den has nothing on it. Do not quote the hits. |
 | "read the plan", "show me the latest changelog" | **read** | `get_topic` to see the artifact names, then `read_artifact`. Omit `version` for the head. |
@@ -26,7 +42,9 @@ People edit in the web app or in a mounted folder. Agents use these tools. A sav
 | "back this up", "download everything" | **export** | `export_topic`. The CLI has `den export --all`. |
 | Chat, opinions, work with no document to keep | **not den** | Answer normally. Do not create a topic for a conversation. |
 
-If `whoami` shows a workspace with no topics, call `list_workspaces` and pass `workspace` on every call. A grant bound to a personal workspace is the usual reason den looks empty.
+## Rules of this kind
+
+Anything about the house is kept here: pass this workspace to find_place and search, and look here before anywhere else. To put something: a live document when the words name one (find_place, then change_document); otherwise it happened, so append_entry on the journal with the amount and its currency. A removed row or an emptied list needs the person's yes first; adding and ticking do not. Never guess a date, an amount or an allergy nobody said. Every member reads everything here: what one person would not want the whole house to read (a therapist, a diagnosis, a salary) belongs in that person's own personal workspace, and you say so instead of writing it here. A password, a key or a full account number is never written anywhere in den: say so, and offer where it lives instead. To answer: the value as kept first, then where it came from with its web_url; when it is not kept, say so and offer to keep it, and never answer from general knowledge as if it were the household's.
 
 ## Rules that keep den consistent
 
@@ -56,11 +74,13 @@ If `whoami` shows a workspace with no topics, call `list_workspaces` and pass `w
 - Skills are their own resource: `list_skills` and `get_skill` read one, `put_skill` writes one.
 - Resources: `den://topic/<key>` and `den://topic/<key>/<name>` attach a document to a conversation.
 
-## The kinds marketplace
-
-`list_marketplace {category?, q?, mine?}` shows den-wide kinds any workspace can install. Official ones come first, marked `official`, then community ones that staff reviewed. `get_marketplace_kind {name}` is one listing in full, with the manifest it installs. `install_kind {name, as?}` copies it into the workspace as a kind of its own, for an owner or an admin. The copy carries `source: {listing, version}` and can be changed locally. `publish_kind {kind, title, description, category, tags?}` offers a workspace kind to everyone. A member's listing waits for staff review. Staff publish at once. Categories: engineering, product, design, research, writing, operations, business, personal, household. When a user asks "is there a kind for X", browse the marketplace before you create one.
-
 ## Worked examples
+
+**"Add milk and bread."** → `find_place {query:"add milk and bread"}` → Groceries, a list → `change_document` with both added → "Added milk and bread. 7 items: `web_url`."
+
+**"The boiler service was 180 today."** → `find_place` names the journal → `append_entry {title:"Boiler service", body:"180 CAD, …"}` → "Kept in the journal: `web_url`."
+
+**"When does the insurance renew?"** → `find_place {query:"insurance"}` → Services, the row → answer the date and give the `web_url`. If no row: "Nothing kept on insurance. Want me to add it?"
 
 **"Add eggs and two pints of milk to the shopping list."** → `find_place {query:"shopping list"}` → the place is `meals/shopping_list`, a `list.v1`, and `write` names `change_document` → add both items to the document it handed back → `change_document {…, base_version: 9}` → "Added eggs and milk. The list has 8 items: `web_url`."
 
@@ -74,4 +94,4 @@ If `whoami` shows a workspace with no topics, call `list_workspaces` and pass `w
 
 ## Where this file comes from
 
-den serves it at `/skill.md`. `den skill --install` links it into `~/.claude/skills/den`. The MCP server's instructions point here.
+Generated from the marketplace listing `household` v1 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.

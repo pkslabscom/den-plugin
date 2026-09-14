@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "den": {
+    "den-staging": {
       "type": "http",
       "url": "https://den-staging.pkslabs.com/mcp"
     }

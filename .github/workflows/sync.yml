@@ -1,0 +1,25 @@
+name: sync
+# The repository is a mirror of the plugin catalogs den serves itself (see sync.mjs). It is refreshed every hour and
+# on demand, and a change is committed as the catalogs' own words, so claude.ai sees what the Lambda serves.
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node sync.mjs
+      - name: commit
+        run: |
+          git config user.name 'den sync'
+          git config user.email 'den@pkslabs.com'
+          git add -A
+          git diff --cached --quiet || git commit -m "sync: the plugin catalogs as den serves them"
+          git push

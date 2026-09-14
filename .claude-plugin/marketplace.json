@@ -1,6 +1,6 @@
 {
   "name": "den",
-  "description": "den — the versioned store of record for a team, a household and their AI agents. The connector and the skill that tells an agent how to use it.",
+  "description": "den — the versioned store of record for a team, a household and their AI agents. den itself, and one plugin per kind on its marketplace: the same tools in that kind's words.",
   "owner": {
     "name": "pkslabs",
     "url": "https://pkslabs.com"
@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "den",
-      "description": "The den connector and the skill that tells an agent how to use it: read the status before acting, write a new version without overwriting anyone, and put what a household keeps in the document that already holds it.",
+      "description": "The den connector and the skill that tells an agent how to use it: find the place a thing belongs before writing it, change the document that already holds it, and make a new version without overwriting anyone.",
       "author": {
         "name": "pkslabs"
       },
@@ -18,13 +18,14 @@
         "den",
         "memory",
         "artifacts",
-        "versioning"
+        "versioning",
+        "system of record"
       ],
       "source": "./plugins/den"
     },
     {
       "name": "den-staging",
-      "description": "den on its staging environment, for testing. Not the record: staging data is a snapshot that drifts.",
+      "description": "The den connector and the skill that tells an agent how to use it: find the place a thing belongs before writing it, change the document that already holds it, and make a new version without overwriting anyone.",
       "author": {
         "name": "pkslabs"
       },
@@ -32,9 +33,30 @@
       "category": "productivity",
       "keywords": [
         "den",
-        "staging"
+        "memory",
+        "artifacts",
+        "versioning",
+        "system of record"
       ],
       "source": "./plugins/den-staging"
+    },
+    {
+      "name": "den-staging-household",
+      "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills, and a journal of what happened. Ask in your own words; every answer says where it came from.",
+      "author": {
+        "name": "pkslabs"
+      },
+      "homepage": "https://den-staging.pkslabs.com/marketplace/household",
+      "category": "household",
+      "keywords": [
+        "den",
+        "household",
+        "household",
+        "home",
+        "groceries",
+        "bills"
+      ],
+      "source": "./plugins/den-staging-household"
     }
   ]
 }
