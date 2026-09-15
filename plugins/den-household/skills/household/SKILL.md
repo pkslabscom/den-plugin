@@ -16,10 +16,10 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
 | **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
+| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 | **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
 | **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 | **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
-| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 
 ## Triage: what kind of request is this?
 
@@ -129,4 +129,4 @@ And on every client, whatever the kind:
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v6 at https://den.pkslabs.com/skill/household.md. The plugin that carries it is `den-household`.
+Generated from the marketplace listing `household` v7 at https://den.pkslabs.com/skill/household.md. The plugin that carries it is `den-household`.
