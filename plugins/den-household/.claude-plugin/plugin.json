@@ -1,0 +1,18 @@
+{
+  "name": "den-household",
+  "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.",
+  "author": {
+    "name": "pkslabs",
+    "url": "https://pkslabs.com"
+  },
+  "homepage": "https://den.pkslabs.com/marketplace/household",
+  "keywords": [
+    "den",
+    "household",
+    "household",
+    "household",
+    "home",
+    "groceries",
+    "bills"
+  ]
+}

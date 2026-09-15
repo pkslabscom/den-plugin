@@ -24,6 +24,24 @@
       "source": "./plugins/den"
     },
     {
+      "name": "den-household",
+      "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.",
+      "author": {
+        "name": "pkslabs"
+      },
+      "homepage": "https://den.pkslabs.com/marketplace/household",
+      "category": "household",
+      "keywords": [
+        "den",
+        "household",
+        "household",
+        "home",
+        "groceries",
+        "bills"
+      ],
+      "source": "./plugins/den-household"
+    },
+    {
       "name": "den-staging",
       "description": "The den connector and the skill that tells an agent how to use it: find the place a thing belongs before writing it, change the document that already holds it, and make a new version without overwriting anyone.",
       "author": {
