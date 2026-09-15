@@ -1,6 +1,6 @@
 {
   "name": "den-staging-household",
-  "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills, a journal of what happened and a ledger of what it cost. Ask in your own words; every answer says where it came from.",
+  "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened and a ledger of what it cost. Ask in your own words; every answer says where it came from.",
   "author": {
     "name": "pkslabs",
     "url": "https://pkslabs.com"

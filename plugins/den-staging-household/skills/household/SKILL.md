@@ -5,7 +5,7 @@ description: Use whenever the den household connector is connected and the perso
 
 # den for Household
 
-A house and the people in it: the groceries, who lives here, the contacts, the services and bills, a journal of what happened and a ledger of what it cost. Ask in your own words; every answer says where it came from.
+A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened and a ledger of what it cost. Ask in your own words; every answer says where it came from.
 
 den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
 
@@ -15,11 +15,11 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
-| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
-| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
-| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
-| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
 | **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
+| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
+| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
+| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
+| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 
 ## Triage: what kind of request is this?
 
@@ -125,4 +125,4 @@ And on every client, whatever the kind:
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v5 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
+Generated from the marketplace listing `household` v6 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
