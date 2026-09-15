@@ -5,6 +5,6 @@ Household: A house and the people in it: the groceries, who lives here, the cont
 This plugin installs two things.
 
 - **The connector**, at `https://den-staging.pkslabs.com/mcp/household`: den's tools, speaking this kind's language. Run `/mcp` in a session to sign in and pick the workspace you share.
-- **The skill**, generated from the marketplace listing `household` v7.
+- **The skill**, generated from the marketplace listing `household` v8.
 
 To remove: `claude plugin uninstall den-staging-household@den-staging-pkslabs-com`.
