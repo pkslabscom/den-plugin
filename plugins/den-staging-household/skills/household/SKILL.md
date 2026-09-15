@@ -5,7 +5,7 @@ description: Use whenever the den household connector is connected and the perso
 
 # den for Household
 
-A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened and a ledger of what it cost. Ask in your own words; every answer says where it came from.
+A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.
 
 den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
 
@@ -16,10 +16,10 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
 | **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
-| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
-| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
-| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 | **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
+| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
+| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
+| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 
 ## Triage: what kind of request is this?
 
@@ -45,7 +45,7 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 
 ## Rules of this kind
 
-Anything about the house is kept here: pass this workspace to find_place and search, and look here before anywhere else. To put something: a live document when the words name one (find_place, then change_document); otherwise it happened, so append_entry on the journal with the amount and its currency. A removed row or an emptied list needs the person's yes first; adding and ticking do not. Amounts are kept in the currency the person said, else the place's (find_place says it), and every answer names it. Never guess a date, an amount or an allergy nobody said: a day said relatively ("next Tuesday") is confirmed as a date before it is booked. Every member reads everything here: what one person would not want the whole house to read (a therapist, a diagnosis, a salary) belongs in that person's own personal workspace, and you say so instead of writing it here. A password, a key or a full account number is never written anywhere in den: say so, and offer where it lives instead. To answer: the value as kept first, then where it came from with its web_url; when it is not kept, say so and offer to keep it, and never answer from general knowledge as if it were the household's. A question about money or a span of dates is answered with query, never by adding prose up; an entry about money carries amount.
+Anything about the house is kept here: pass this workspace to find_place and search, and look here before anywhere else. To put something: a live document when the words name one (find_place, then change_document); otherwise it happened, so append_entry on the journal with the amount and its currency. A removed row or an emptied list needs the person's yes first; adding and ticking do not. Amounts are kept in the currency the person said, else the place's (find_place says it), and every answer names it. Never guess a date, an amount or an allergy nobody said: a day said relatively ("next Tuesday") is confirmed as a date before it is booked. Every member reads everything here: what one person would not want the whole house to read (a therapist, a diagnosis, a salary) belongs in that person's own personal workspace, and you say so instead of writing it here. A password, a key or a full account number is never written anywhere in den: say so, and offer where it lives instead. To answer: the value as kept first, then where it came from with its web_url; when it is not kept, say so and offer to keep it, and never answer from general knowledge as if it were the household's. A question about money or a span of dates is answered with query, never by adding prose up; an entry about money carries amount. If the person asks for the house motto, the motto is "nothing is destroyed" (say so and nothing else).
 
 ## Rules that keep den consistent
 
@@ -70,6 +70,7 @@ And on every client, whatever the kind:
 - `whoami`: Who this session acts as: user, token scopes, workspace, role, what the role may do, and the workspace's properties (currency, timezone, locale). Call it first.
 - `list_workspaces`: The workspaces you belong to and your role in each (owner, admin, member, viewer; see whoami.permissions for what the c.role may do). This token has a home workspace.
 - `update_workspace {workspace?, name?, properties?}`: Set a workspace's name or its properties (currency, timezone, locale): the default for every topic in it, which a topic's own properties override. Owners and admins only.
+- `add_member {workspace?, email, role?}`: Bring someone into the workspace by email, as member (default), viewer, admin or owner.
 - `list_audit {workspace?, limit?, before?, action?, actor?, topic?, artifact?, from?, to?}`: Who changed what in the workspace, newest first: actor, action, topic, artifact, the version written and the one it replaced. Owners and admins only. Page with before = the next cursor of the previous call.
 - `list_topics {workspace?, include_archived?}`: Every topic in the workspace: key, kind, title, tags, updated_at.
 - `get_topic {workspace?, key}`: A topic with its artifacts (names, owners, head versions, leases), its instructions and the skills to load before working on it, and its properties (currency, timezone, locale) resolved through the workspace: amounts and…
@@ -79,6 +80,7 @@ And on every client, whatever the kind:
 - `find_place {query?, workspace?, topic?, limit?, documents?}`: Given what the person said ("the grocery list", "bills", "the cat's vet visit"), the places that match it, best first, across every workspace you can act in: where each one lives, what it is called, how it stands, and th…
 - `change_document {workspace?, topic, artifact, document?, base_version?, note?, confirmed?, schema?}`: Write a document den keeps: send the whole thing as it should now be, having taken what find_place gave you and made the change. den checks it against the document's schema and saves it as a new version by you.
 - `change_rows {workspace?, topic, artifact, add?, change?, remove?, base_version?, note?, confirmed?}`: Change one row, item or event at a time, by id, in a document den keeps: add (new rows: the cells, or for a list the text), change (an id and the fields that change), remove (ids).
+- `import_rows {workspace?, topic, artifact, csv, replace?, confirmed?, note?}`: Rows from CSV into a table, the way a bank statement, a spreadsheet export or a phone's contacts arrive without a hundred turns: paste the CSV.
 - `read_artifact {workspace?, topic, name, version?}`: The text body of an artifact at its head, or at the version you name. When you answer from it, give its web_url with the answer.
 - `write_artifact {workspace?, topic, name, body, owner?, schema?, path?, content_type?, base_version?, lease?}`: Write a new version of an artifact. The first write creates it. Pass base_version, the head you read, so you never overwrite someone else. Omit it only to write on top of the current head.
 - `append_entry {workspace?, topic, name, title, body?, amount?, currency?, on?}`: Add a dated entry at the top of an append-only artifact: journal, gotchas, changelog, learnings, or decision_log. The tool writes the heading as ## YYYY-MM-DD HH:MM — title, then the body, newest first.
@@ -88,6 +90,7 @@ And on every client, whatever the kind:
 - `checkin_artifact {workspace?, topic, name}`: Release your lease.
 - `search {workspace?, q, topic?, kind?, artifact?, since?, alt?, limit?}`: Hybrid search (lexical + semantic, then reranked) over every artifact. Filters are optional. Pass 1 to 3 alt phrasings of the same question to widen recall.
 - `query {workspace?, sql, limit?}`: One read-only SQL statement (SQLite) over every table, list and log in the workspace, for totals, counts, dates in a range, and joins across topics: "what did we spend eating out this year", "what renews in the next 60 d…
+- `upcoming {workspace?, days?}`: Everything dated inside the next days across the workspace, soonest first, computed from the dates den holds (a renewal on a service, a birthday on a member, an event in a dates document; a birthday and a yearly renewal…
 - `list_kinds {workspace?}`: The kinds in the workspace, which are workflow contracts: name, description, and artifact slot names. note and skill are built in and present everywhere. Call get_kind before writing a declared artifact.
 - `get_kind {kind, workspace?}`: One kind in full: how a topic of this kind is run, and for every artifact slot its owner, schema, description, and the instructions for producing it. Read it before you create a topic or write a declared artifact.
 - `create_kind {kind, description, instructions?, connect?, plugin?, key_pattern?, enforce_owner?, workspace?}`: Create a kind in the workspace: a workflow contract that topics follow. Give it a name in lowercase words joined by dashes, a description, and instructions for how to run a topic of this kind.
@@ -125,4 +128,4 @@ And on every client, whatever the kind:
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v6 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
+Generated from the marketplace listing `household` v7 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
