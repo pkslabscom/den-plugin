@@ -1,6 +1,6 @@
 ---
 name: den
-description: Use whenever den is connected as an MCP server (tools like find_place, search, read_artifact, write_artifact, list_topics) and the user asks to add, change, tick, find, read, store, version, or share something they keep — a list, a table, dates, notes, a plan, a record. Also for "what do we have on X", "save this", "put this in den", "where is the latest…". This skill decides what den should do with a request and how to do it without clobbering anyone.
+description: Use whenever den is connected as an MCP server (tools like find_place, search, read_artifact, write_artifact, list_topics) and the user asks to add, change, tick, find, read, store, version, or share something they keep — a list, a table, dates, notes, a plan, a record — or tells you a fact worth keeping without asking you to save it (a name, a number, a date, an appointment, a purchase, a decision, what happened), since den is where they keep such things. Also for "what do we have on X", "save this", "put this in den", "where is the latest…". This skill decides what den should do with a request and how to do it without clobbering anyone.
 ---
 
 # den — how an agent uses it
@@ -16,6 +16,7 @@ People edit in the web app or in a mounted folder. Agents use these tools. A sav
 | The user says | It is a | Do |
 |---|---|---|
 | "add eggs to the grocery list", "tick off the milk", "put the dentist on Thursday", "add a bill", "the cat had her jab" | **a thing they keep** | `find_place` with their own words. Then use the tool that place names in `write`: `change_document` with the whole document, `append_entry` for a log, `write_artifact` for a written page. Never `create_topic`. |
+| "the plumber fixed the leak, 240", "Sam is allergic to peanuts", "we ate out tonight", a fact said in passing with no "save it" | **a thing told** | `find_place` with the sentence; keep it in the place it names (the document, or the append-only log), or say where it belongs when it is not den's. A password, a key or a card number is never kept: say so, and where it lives instead. Never let it pass as merely noted: the person will think it is kept. |
 | "what do we have on…", "find…", "where is…", "what did we decide about…" | **read** | `search` first. Natural language works, because it reads words and meaning. Then `read_artifact` on the best hit. Quote the `web_url`. When the result says `confident: false`, say den has nothing on it. Do not quote the hits. |
 | "read the plan", "show me the latest changelog" | **read** | `get_topic` to see the artifact names, then `read_artifact`. Omit `version` for the head. |
 | "where are we with X", "continue X", "what's next on X" | **resume** | `get_topic` X. Follow its `instructions` and load every entry in `skills` before you act. Then `get_kind` for the topic's kind: it says which artifacts hold the state and how to keep them. Read those. That is the context. Do not ask the user to repeat it. |
