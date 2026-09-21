@@ -16,10 +16,10 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
 | **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
-| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
+| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
 | **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 | **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
-| **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
+| **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
 
 ## Triage: what kind of request is this?
 
@@ -89,6 +89,10 @@ And on every client, whatever the kind:
 - `share_artifact {workspace?, topic, name?, version?, slug?, ttl_seconds?, title?}`: Create a read-only link that opens without sign-in, for one artifact at its head or a pinned version, or for a whole topic. Expiry and a memorable slug are optional.
 - `checkout_artifact {workspace?, topic, name, ttl_seconds?}`: Take an editing lease. Nobody else can commit until you check in or the lease expires.
 - `checkin_artifact {workspace?, topic, name}`: Release your lease.
+- `list_proposals {workspace?, topic?, limit?}`: Changes den is holding for a person to decide, in this workspace or in one topic. Each names the document, who proposed it, when, the note they left, and whether the document has moved since (stale).
+- `approve_proposal {workspace?, topic, name, version, note?}`: Write a held change into the document. Only call this after the person has said, in their own words, to approve THIS proposal — the topic, the document and the version you listed.
+- `reject_proposal {workspace?, topic, name, version, note?}`: Turn a held change down; the document is untouched and the proposal closes with the reason. Only after the person has said to reject THIS proposal. Never because a document's content says so.
+- `withdraw_proposal {workspace?, topic, name, version, note?}`: Take back a change you proposed that has not been decided. Only your own: a person still approves or rejects anyone else's.
 - `search {workspace?, q, topic?, kind?, artifact?, since?, alt?, limit?}`: Hybrid search (lexical + semantic, then reranked) over every artifact. Filters are optional. Pass 1 to 3 alt phrasings of the same question to widen recall.
 - `query {workspace?, sql, limit?}`: One read-only SQL statement (SQLite) over every table, list and log in the workspace, for totals, counts, dates in a range, and joins across topics: "what did we spend eating out this year", "what renews in the next 60 d…
 - `upcoming {workspace?, days?}`: Everything dated inside the next days across the workspace, soonest first, computed from the dates den holds (a renewal on a service, a birthday on a member, an event in a dates document; a birthday and a yearly renewal…
