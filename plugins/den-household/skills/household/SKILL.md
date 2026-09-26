@@ -1,11 +1,11 @@
 ---
 name: household
-description: Use whenever the den household connector is connected and the person mentions the house: groceries or a shopping list, who lives here, a contact (the vet, the plumber, the school), a service or bill (internet, insurance, a subscription), or tells you something that happened at home (a repair, a purchase, a meal out, a decision, an appointment, an allergy) without asking you to save it. Also "what do we have on…", "when does … renew", "who is our …".
+description: Use whenever the den household connector is connected and the person mentions the house: groceries or a shopping list, who lives here, a contact (the vet, the plumber, the school), a service or bill (internet, insurance, a subscription), a message for the house or a member ("tell Sam…", the group chat), or tells you something that happened at home (a repair, a purchase, a meal out, a decision, an appointment, an allergy) without asking you to save it. Also "what do we have on…", "when does … renew", "who is our …".
 ---
 
 # den for Household
 
-A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.
+A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, a group chat for messages between members, and what is coming up. Ask in your own words; every answer says where it came from.
 
 den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
 
@@ -15,11 +15,12 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
+| **Group chat** | `group_chat` | a table (`change_document`) | The house's group chat: one row per message between members, newest last. |
+| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
+| **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
+| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
 | **Groceries** | `groceries` | a list (`change_document`) | The standing shopping list. |
 | **Contacts** | `contacts` | a table (`change_document`) | Everyone outside the house: the vet, the plumber, the school, the neighbour with a key. |
-| **Services** | `services` | a table (`change_document`) | What the house pays for or depends on: utilities, insurance, subscriptions, warranties, with what each costs and when it renews. |
-| **Journal** | `journal` | an append-only log (`append_entry`) | Anything that happened, and anything booked for a day ahead: a repair, a vet visit, a meal out, a decision, a shop, an appointment, dated. |
-| **Who lives here** | `members` | a table (`change_document`) | The people and pets of the house: birthday, allergies, notes. |
 
 ## Triage: what kind of request is this?
 
@@ -28,6 +29,7 @@ On a workspace with no topic of this kind yet, `create_topic` with kind `househo
 | "add milk", "tick off the eggs", "what do I need from the shop" | **the groceries** | `find_place` with the words, then `change_document` with the whole list. Adding and ticking need no question; emptying the list does. |
 | "the plumber is Joe, 07700 900123", "the vet moved" | **a contact** | `find_place`, then `change_document` on Contacts. A person who lives here goes in Members, not Contacts. |
 | "internet is Northline, 55 a month", "cancel the gym" | **a service** | `find_place`, then `change_document` on Services. den cannot cancel anything: give the how-to-cancel cell and the renewal date, change nothing unless told. |
+| "tell Sam…", "let everyone know…", "post in the group chat", "what's new in the chat" | **a message** | `change_rows` on `group_chat`: add one row with at (now), from (the sender's first name), to (the member addressed, if any), message (their words verbatim). Never edit or remove past rows. A fact in it that the house keeps also goes to its own place. |
 | "the plumber fixed the leak, 240", "we ate out tonight", "Sam is allergic to peanuts", "we decided to redo the kitchen" | **a thing that happened** | `append_entry` on the journal with the amount and its currency. A receipt's lines are an `x-receipt_<date>_<shop>` table as well. Never let it pass as merely noted. |
 | "Sam's therapist is Dr Lee", a diagnosis, a salary | **private to one person** | Not the shared house: say it belongs in that person's own workspace, and write nothing here. |
 | "the wifi password is…", a PIN, a card number, a key | **a secret** | den keeps none: say so, write nothing, and say where it lives instead (a password manager). |
@@ -111,6 +113,8 @@ And on every client, whatever the kind:
 
 **"The boiler service was 180 today."** → `find_place` names the journal → `append_entry {title:"Boiler service", body:"180 CAD, …"}` → "Kept in the journal: `web_url`."
 
+**"Tell Sam to take the bins out."** → `find_place {query:"group chat"}` → `change_rows` adding `{at:"<now>", from:"<sender's first name>", to:"Sam", message:"take the bins out"}` → "Posted in the group chat: `web_url`."
+
 **"When does the insurance renew?"** → `find_place {query:"insurance"}` → Services, the row → answer the date and give the `web_url`. If no row: "Nothing kept on insurance. Want me to add it?"
 
 **"How much have we spent eating out this year?"** → `query {sql:"SELECT SUM(amount) AS total, currency FROM home__ledger WHERE what LIKE '%ate out%' AND date >= '2026-01-01' GROUP BY currency"}` → "412 CAD across 6 meals this year: `web_url`." A journal kept before the ledger existed is asked through its entries (home__journal: date, title, body).
@@ -129,4 +133,4 @@ And on every client, whatever the kind:
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v7 at https://den.pkslabs.com/skill/household.md. The plugin that carries it is `den-household`.
+Generated from the marketplace listing `household` v10 at https://den.pkslabs.com/skill/household.md. The plugin that carries it is `den-household`.
