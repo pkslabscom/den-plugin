@@ -111,6 +111,8 @@ And on every client, whatever the kind:
 - `list_skills {workspace?}`: The skills in the workspace: name, description (the trigger sentence), updated_at. A skill is a SKILL.md with support files that Claude Code loads from ~/.claude/skills/<name>. Read one with get_skill.
 - `get_skill {workspace?, name, bodies?}`: One skill: its SKILL.md body and the list of support files. Pass bodies to get every file. Load it when a topic lists the skill by name and it is not installed locally.
 - `put_skill {workspace?, name, description?, files}`: Create or update a skill from its files. files must include SKILL.md, whose frontmatter name equals the skill name. Unchanged files are skipped. Support files you leave out are removed. Every change is a new version.
+- `add_runner {workspace?, label?}`: Make a one-time code that joins a computer to this workspace as a runner, so the workspace's agents can run on it.
+- `list_runners {workspace?}`: The computers that run this workspace's agents: each one's name, what kind of runner it is, when it last checked in, and whether it was revoked.
 
 ## Worked examples
 
