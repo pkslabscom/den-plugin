@@ -7,7 +7,7 @@ description: Use whenever the den household connector is connected and the perso
 
 A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.
 
-den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/household`; every result carries a `web_url` to hand back.
+den keeps it: a **topic** of kind `household` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/@the-house/household`; every result carries a `web_url` to hand back.
 
 On a workspace with no topic of this kind yet, `create_topic` with kind `household` first, and ask for the currency the house pays in and its timezone (kept as the topic's properties), and who lives here (the Members table).
 
@@ -141,4 +141,4 @@ And on every client, whatever the kind:
 
 ## Where this file comes from
 
-Generated from the marketplace listing `household` v9 at https://den-staging.pkslabs.com/skill/household.md. The plugin that carries it is `den-staging-household`.
+Generated from the marketplace listing `household` v9 at https://den-staging.pkslabs.com/skill/@the-house/household.md. The plugin that carries it is `den-staging-the-house--household`.

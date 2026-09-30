@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "den-staging-the-house--household": {
+      "type": "http",
+      "url": "https://den-staging.pkslabs.com/mcp/@the-house/household"
+    }
+  }
+}
