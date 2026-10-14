@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "den-staging-my-house": {
+      "type": "http",
+      "url": "https://den-staging.pkslabs.com/mcp/my-house"
+    }
+  }
+}

@@ -60,6 +60,34 @@
       "source": "./plugins/den-staging"
     },
     {
+      "name": "den-staging-reef-walkthrough-71873--my-house",
+      "description": "Keeps your groceries list tidy and marks what renews next.",
+      "author": {
+        "name": "pkslabs"
+      },
+      "homepage": "https://den-staging.pkslabs.com/marketplace/@reef-walkthrough-71873/my-house",
+      "category": "household",
+      "keywords": [
+        "den",
+        "my-house"
+      ],
+      "source": "./plugins/den-staging-reef-walkthrough-71873--my-house"
+    },
+    {
+      "name": "den-staging-my-house",
+      "description": "Keeps your groceries list tidy and marks what renews next.",
+      "author": {
+        "name": "pkslabs"
+      },
+      "homepage": "https://den-staging.pkslabs.com/marketplace/my-house",
+      "category": "household",
+      "keywords": [
+        "den",
+        "my-house"
+      ],
+      "source": "./plugins/den-staging-my-house"
+    },
+    {
       "name": "den-staging-the-house--household",
       "description": "A house and the people in it: the groceries, who lives here, the contacts, the services and bills (with the bill itself behind each row), a journal of what happened, a ledger of what it cost, and what is coming up. Ask in your own words; every answer says where it came from.",
       "author": {

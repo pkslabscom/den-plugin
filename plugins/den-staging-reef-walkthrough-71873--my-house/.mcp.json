@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "den-staging-reef-walkthrough-71873--my-house": {
+      "type": "http",
+      "url": "https://den-staging.pkslabs.com/mcp/@reef-walkthrough-71873/my-house"
+    }
+  }
+}

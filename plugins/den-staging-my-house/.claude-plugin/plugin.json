@@ -1,0 +1,14 @@
+{
+  "name": "den-staging-my-house",
+  "description": "Keeps your groceries list tidy and marks what renews next.",
+  "author": {
+    "name": "pkslabs",
+    "url": "https://pkslabs.com"
+  },
+  "homepage": "https://den-staging.pkslabs.com/marketplace/my-house",
+  "keywords": [
+    "den",
+    "my-house",
+    "household"
+  ]
+}
