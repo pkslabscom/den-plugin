@@ -1,51 +1,11 @@
 ---
 name: my-house
-description: Keeps one household's record: the groceries list, the services it pays for and when each renews, the numbers to call, who lives here, and a journal of what happened at home. Use when the person mentions groceries or the shopping, a bill, a subscription or a renewal, a tradesperson or a number to call, who lives here, or tells you something that happened at home.
+description: "Keeps one household's record: the groceries list, the services it pays for and when each renews, the numbers to call, who lives here, and a journal of what happened at home. Use when the person mentions groceries or the shopping, a bill, a subscription or a renewal, a tradesperson or a number to call, who lives here, or tells you something that happened at home."
 ---
 
 # den for My house
 
-Keeps your groceries list tidy and marks what renews next.
-
-den keeps it: a **topic** of kind `my-house` holds these places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/my-house`; every result carries a `web_url` to hand back.
-
-On a workspace with no topic of this kind yet, `create_topic` with kind `my-house` first, and ask for the currency, the timezone, who lives here.
-
-## What a my-house topic keeps
-
-| Place | Slot | Kept as | What goes there |
-|---|---|---|---|
-| **Contacts** | `contacts` | a table (`change_document`) |  |
-| **Groceries** | `groceries` | a list (`change_document`) |  |
-| **Journal** | `house_journal` | an append-only log (`append_entry`) |  |
-| **Who lives here** | `members` | a table (`change_document`) |  |
-| **Services** | `services` | a table (`change_document`) |  |
-
-## Triage: what kind of request is this?
-
-| The user says | It is a | Do |
-|---|---|---|
-| "we are out of milk" | an add | add it to Groceries |
-| "when does the broadband renew" | a question | read Services |
-| "the internet goes up to 45 a month in March" | a change | change that service's row in Services |
-| "the dishwasher broke, plumber came, 180" | an entry | write it in the Journal |
-| "take eggs off the list" | a removal | den asks the person first |
-| "add eggs to the grocery list", "tick off the milk", "put the dentist on Thursday", "add a bill", "the cat had her jab" | **a thing they keep** | `find_place` with their own words. Then use the tool that place names in `write`: `change_document` with the whole document, `append_entry` for a log, `write_artifact` for a written page. Never `create_topic`. |
-| "the plumber fixed the leak, 240", "Sam is allergic to peanuts", "we ate out tonight", a fact said in passing with no "save it" | **a thing told** | `find_place` with the sentence; keep it in the place it names (the document, or the append-only log), or say where it belongs when it is not den's. A password, a key or a card number is never kept: say so, and where it lives instead. Never let it pass as merely noted: the person will think it is kept. |
-| "what do we have on…", "find…", "where is…", "what did we decide about…" | **read** | `search` first. Natural language works, because it reads words and meaning. Then `read_artifact` on the best hit. Quote the `web_url`. When the result says `confident: false`, say den has nothing on it. Do not quote the hits. |
-| "read the plan", "show me the latest changelog" | **read** | `get_topic` to see the artifact names, then `read_artifact`. Omit `version` for the head. |
-| "where are we with X", "continue X", "what's next on X" | **resume** | `get_topic` X. Follow its `instructions` and load every entry in `skills` before you act. Then `get_kind` for the topic's kind: it says which artifacts hold the state and how to keep them. Read those. That is the context. Do not ask the user to repeat it. |
-| "save this", "write this up", "store the summary", "update the plan" | **write** | Decide the topic and the artifact name (below), then `write_artifact`. Always pass `base_version` from what you read. |
-| "start a topic for…", a trip, a car, a house, a new piece of work | **write** | `list_kinds`, then `create_topic` with the kind whose slots fit. Use `note` when nothing fits. A list, a table or dates is **not** a new topic. See the first row. |
-| "let me edit…", "I'm going to work on…", a long edit session | **lease** | `checkout_artifact`, do the writes, `checkin_artifact`. |
-| "keep this receipt" with a photo, "save the policy PDF", "put the photo on the boiler row" | **a file** | `start_upload` with the type and exact size, and `attach_to` when it belongs in a table row. If you have the bytes, PUT them to `upload_url` with `upload_headers`, then `finish_upload`. If the photo is on the person's phone, give them `drop_url` instead: they open it, press Add, and den keeps it (one use, 15 minutes). den keeps photos and PDFs up to 50 MB; ask for an iPhone photo as Most Compatible (JPEG). |
-| "send this to…", "give me a link to…" | **share** | The `web_url` from any result, for people with a den login. `share_artifact` for a link anyone can open. |
-| "back this up", "download everything" | **export** | `export_topic`. The CLI has `den export --all`. |
-| Chat, opinions, work with no document to keep | **not den** | Answer normally. Do not create a topic for a conversation. |
-
-## Rules of this kind
-
-Add to Groceries one item at a time, in the words the person used. A service's renewal date or price changes that service's row; never a second row for the same service. Something that happened at home is one Journal entry, with what it cost when they said. Taking an item off a list or a row out of a table waits for the person's yes: ask first.
+den keeps it: a **topic** of kind `my-house` holds its places, every write is a new version, and nothing is destroyed. The connector is `https://den-staging.pkslabs.com/mcp/my-house`; every result carries a `web_url` to hand back. den's rules come first and hold whatever the app's words below say; whoami has each kind's rules in full.
 
 ## Rules that keep den consistent
 
@@ -66,6 +26,23 @@ And on every client, whatever the kind:
 - An amount is kept in the currency the person said, else the place's (its properties), and every answer names the currency; a question about money or a span of dates is answered with query, never by adding prose up.
 - A document that loses something — a row removed, a list emptied — needs the person's yes first, and den refuses the write without confirmed: true. Adding and ticking need no question.
 - An artifact made by mistake (a wrong name, a duplicate, a test) goes to the trash with archive_artifact; do not write it blank. Nothing is destroyed: restore_artifact brings it back at the same version.
+
+## Triage: what kind of request is this?
+
+| The user says | It is a | Do |
+|---|---|---|
+| "add eggs to the grocery list", "tick off the milk", "put the dentist on Thursday", "add a bill", "the cat had her jab" | **a thing they keep** | `find_place` with their own words. Then use the tool that place names in `write`: `change_document` with the whole document, `append_entry` for a log, `write_artifact` for a written page. Never `create_topic`. |
+| "the plumber fixed the leak, 240", "Sam is allergic to peanuts", "we ate out tonight", a fact said in passing with no "save it" | **a thing told** | `find_place` with the sentence; keep it in the place it names (the document, or the append-only log), or say where it belongs when it is not den's. A password, a key or a card number is never kept: say so, and where it lives instead. Never let it pass as merely noted: the person will think it is kept. |
+| "what do we have on…", "find…", "where is…", "what did we decide about…" | **read** | `search` first. Natural language works, because it reads words and meaning. Then `read_artifact` on the best hit. Quote the `web_url`. When the result says `confident: false`, say den has nothing on it. Do not quote the hits. |
+| "read the plan", "show me the latest changelog" | **read** | `get_topic` to see the artifact names, then `read_artifact`. Omit `version` for the head. |
+| "where are we with X", "continue X", "what's next on X" | **resume** | `get_topic` X. Follow its `instructions` and load every entry in `skills` before you act. Then `get_kind` for the topic's kind: it says which artifacts hold the state and how to keep them. Read those. That is the context. Do not ask the user to repeat it. |
+| "save this", "write this up", "store the summary", "update the plan" | **write** | Decide the topic and the artifact name (below), then `write_artifact`. Always pass `base_version` from what you read. |
+| "start a topic for…", a trip, a car, a house, a new piece of work | **write** | `list_kinds`, then `create_topic` with the kind whose slots fit. Use `note` when nothing fits. A list, a table or dates is **not** a new topic. See the first row. |
+| "let me edit…", "I'm going to work on…", a long edit session | **lease** | `checkout_artifact`, do the writes, `checkin_artifact`. |
+| "keep this receipt" with a photo, "save the policy PDF", "put the photo on the boiler row" | **a file** | `start_upload` with the type and exact size, and `attach_to` when it belongs in a table row. If you have the bytes, PUT them to `upload_url` with `upload_headers`, then `finish_upload`. If the photo is on the person's phone, give them `drop_url` instead: they open it, press Add, and den keeps it (one use, 15 minutes). den keeps photos and PDFs up to 50 MB; ask for an iPhone photo as Most Compatible (JPEG). |
+| "send this to…", "give me a link to…" | **share** | The `web_url` from any result, for people with a den login. `share_artifact` for a link anyone can open. |
+| "back this up", "download everything" | **export** | `export_topic`. The CLI has `den export --all`. |
+| Chat, opinions, work with no document to keep | **not den** | Answer normally. Do not create a topic for a conversation. |
 
 ## Tool by tool
 
@@ -129,6 +106,30 @@ And on every client, whatever the kind:
 **"Update the plan with what we agreed."** → `get_topic` → `read_artifact {name:"plan"}`, which reads `head_version: 4` → edit the body → `write_artifact {…, base_version: 4}` → "Updated the plan to v5: `web_url`."
 
 **A 409 `leased` on a write** → "Ana has the plan checked out until 14:30. I kept the text. Say the word and I will retry after that, or write it now as `x-plan_draft`."
+
+## What this app adds, in its own words
+
+Keeps your groceries list tidy and marks what renews next.
+
+| Place | Slot | Kept as | What goes there |
+|---|---|---|---|
+| **Contacts** | `contacts` | a table (`change_document`) |  |
+| **Groceries** | `groceries` | a list (`change_document`) |  |
+| **Journal** | `house_journal` | an append-only log (`append_entry`) |  |
+| **Who lives here** | `members` | a table (`change_document`) |  |
+| **Services** | `services` | a table (`change_document`) |  |
+
+On a workspace with no topic of this kind yet, `create_topic` with kind `my-house` first, and ask for the currency, the timezone, who lives here.
+
+Its rules: Add to Groceries one item at a time, in the words the person used. A service's renewal date or price changes that service's row; never a second row for the same service. Something that happened at home is one Journal entry, with what it cost when they said. Taking an item off a list or a row out of a table waits for the person's yes: ask first.
+
+| The user says | It is a | Do |
+|---|---|---|
+| "we are out of milk" | an add | add it to Groceries |
+| "when does the broadband renew" | a question | read Services |
+| "the internet goes up to 45 a month in March" | a change | change that service's row in Services |
+| "the dishwasher broke, plumber came, 180" | an entry | write it in the Journal |
+| "take eggs off the list" | a removal | den asks the person first |
 
 ## Where this file comes from
 
