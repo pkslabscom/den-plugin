@@ -1,0 +1,17 @@
+{
+  "name": "den-staging-stage1-household--groceries",
+  "description": "A simple grocery list: add, tick, clear.",
+  "author": {
+    "name": "pkslabs",
+    "url": "https://pkslabs.com"
+  },
+  "homepage": "https://den-staging.pkslabs.com/marketplace/@stage1-household/groceries",
+  "keywords": [
+    "den",
+    "groceries",
+    "household",
+    "household",
+    "groceries",
+    "list"
+  ]
+}

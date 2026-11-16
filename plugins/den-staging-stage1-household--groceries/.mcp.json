@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "den-staging-stage1-household--groceries": {
+      "type": "http",
+      "url": "https://den-staging.pkslabs.com/mcp/@stage1-household/groceries"
+    }
+  }
+}
