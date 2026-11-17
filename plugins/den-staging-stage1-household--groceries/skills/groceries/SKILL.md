@@ -1,6 +1,6 @@
 ---
 name: groceries
-description: "Use when the den groceries connector is connected and the person mentions groceries or the shopping list: add something to buy, tick or untick what was bought, take something off, clear what is ticked, or ask what is on the list."
+description: "Keeps the house grocery list: what to buy, what is ticked as bought, and clearing what is ticked. Use when the person mentions groceries or the shopping list: add something to buy, tick or untick what was bought, take something off, clear what is ticked, or ask what is on the list."
 ---
 
 # den for Groceries
@@ -115,24 +115,24 @@ And on every client, whatever the kind:
 
 ## What this app adds, in its own words
 
-A simple grocery list: add, tick, clear.
+One grocery list: add it, tick it when bought, clear it.
 
 | Place | Slot | Kept as | What goes there |
 |---|---|---|---|
-| **Groceries** | `items` | a list (`change_document`) | The grocery list: what to buy, and what is ticked. |
+| **Groceries** | `items` | a list (`change_document`) | The grocery list, the shopping list: what to buy from the shop, and what is ticked as bought. |
 
 Its rules: A grocery list is one document: the items slot of a groceries topic, a list.v1. Find it with find_place and the person's words, then change it with change_rows by id; never send the whole list. Add: add [{text}], one item per thing, the words as the person said them. No categories, no sections, and a quantity only inside the text. Tick when bought: change [{id, done: true}]; untick: change [{id, done: false}]. Remove: remove [id]. The person naming what goes is their yes, so pass confirmed: true; never remove what they did not name. Clear ticked: remove the ids of every item with done: true, confirmed: true, only when they asked to clear. Answer with what changed, how many are left to buy, and the web_url.
 
 | The user says | It is a | Do |
 |---|---|---|
-| "add eggs and bread" | **an add** | `find_place`, then `change_rows` add [{text: "Eggs"}, {text: "Bread"}]. |
-| "got the oat milk", "tick the bread" | **a tick** | `find_place`, then `change_rows` change [{id, done: true}]. |
-| "I did not get the eggs" | **an untick** | `change_rows` change [{id, done: false}]. |
-| "take the bread off" | **a remove** | `change_rows` remove [id], confirmed: true. |
-| "clear the ticked ones" | **clear ticked** | `change_rows` remove [every done id], confirmed:…
+| "add eggs and bread" | an add | `find_place`, then `change_rows` add [{text: "Eggs"}, {text: "Bread"}] |
+| "got the oat milk", "tick the bread" | a tick | `find_place`, then `change_rows` change [{id, done: true}] |
+| "I did not get the eggs" | an untick | `change_rows` change [{id, done: false}] |
+| "take the bread off" | a remove | `change_rows` remove [id], confirmed: true |
+| "clear the ticked ones" | clear ticked | `change_rows`…
 
 **"Ad…
 
 ## Where this file comes from
 
-Generated from the marketplace listing `groceries` v1 at https://den-staging.pkslabs.com/skill/@stage1-household/groceries.md. The plugin that carries it is `den-staging-stage1-household--groceries`.
+Generated from the marketplace listing `groceries` v2 at https://den-staging.pkslabs.com/skill/@stage1-household/groceries.md. The plugin that carries it is `den-staging-stage1-household--groceries`.

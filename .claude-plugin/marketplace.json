@@ -25,7 +25,7 @@
     },
     {
       "name": "den-30-bryan-court--groceries",
-      "description": "A simple grocery list: add, tick, clear.",
+      "description": "One grocery list: add it, tick it when bought, clear it.",
       "author": {
         "name": "pkslabs"
       },
@@ -33,10 +33,7 @@
       "category": "household",
       "keywords": [
         "den",
-        "groceries",
-        "household",
-        "groceries",
-        "list"
+        "groceries"
       ],
       "source": "./plugins/den-30-bryan-court--groceries"
     },
@@ -106,7 +103,7 @@
     },
     {
       "name": "den-staging-stage1-household--groceries",
-      "description": "A simple grocery list: add, tick, clear.",
+      "description": "One grocery list: add it, tick it when bought, clear it.",
       "author": {
         "name": "pkslabs"
       },
@@ -114,10 +111,7 @@
       "category": "household",
       "keywords": [
         "den",
-        "groceries",
-        "household",
-        "groceries",
-        "list"
+        "groceries"
       ],
       "source": "./plugins/den-staging-stage1-household--groceries"
     },
